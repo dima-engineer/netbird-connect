@@ -32,7 +32,17 @@ runs:
       shell: bash
       env:
         USE_BIN_INSTALL: true
-      run: curl -fsSL https://pkgs.netbird.io/install.sh | sh
+      run: |
+        for i in {1..5}; do
+          echo "Attempt $i to install Netbird client..."
+          if curl -fsSL https://pkgs.netbird.io/install.sh | sh; then
+            echo "Netbird client successfully installed"
+            break
+          else
+            echo "Netbird installation failed. Retrying in $((i * 2)) seconds..."
+            sleep $((i * 2))
+          fi
+        done
     - name: Connect to Netbird
       shell: bash
       env:
